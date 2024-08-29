@@ -16,6 +16,11 @@ import Spinner from "@/components/spinner";
 import { AnimalSchema } from "@/schemas";
 import { SelectFieldWrapper } from "@/components/formFieldWrapper/selectFieldWrapper";
 import { ImageFieldWrapper } from "@/components/formFieldWrapper/imageFieldWrapper";
+import { post } from "@/utils/fetchApi";
+import { useToast } from "@/components/ui/use-toast";
+import { toBase64 } from "@/utils/toBase64";
+import cloudinaryImageUploader from "@/utils/cloudinaryImageUploader";
+import { useAnimalContext } from "@/context/animalProvider";
 
 
 
@@ -27,10 +32,9 @@ type Props = {
 
 export const UploadAnimalForm = ({ setModalOpen }: Props) => {
 
-    const [loading, setLoading] = useState<boolean>(false)
-
-    // const { toast } = useToast();
-    const router = useRouter();
+    const [loading, setLoading] = useState<boolean>(false);
+    const { animalDataReretch } = useAnimalContext();
+    const { toast } = useToast();
 
     const form = useForm<z.infer<typeof AnimalSchema>>({
         resolver: zodResolver(AnimalSchema),
@@ -41,27 +45,41 @@ export const UploadAnimalForm = ({ setModalOpen }: Props) => {
         },
     });
 
+
     const onSubmit = async (values: z.infer<typeof AnimalSchema>) => {
-
-        const formData = {
-            animalName: values.animalName,
-            categoryName: values.categoryName,
-            image: values.image
-        };
-
+        if (!values.image || values.image.length === 0) {
+            toast({ title: "at least one Image is required" });
+            return;
+        }
         try {
             setLoading(true)
-            // const res = await post("/category", formData);
-            // const successMessage = res.data.message || "category create succssfully"
-            // toast({ title: successMessage });
-            // router.push("/dashboard/category");
-            console.log(formData, "formData")
+            const selectedImage = values.image[0];
+
+            const imageData = await cloudinaryImageUploader(selectedImage);
+            if (!imageData) {
+                toast({ title: "error uploading image" })
+                return;
+            }
+
+            const { animalName, categoryName } = values;
+
+            const formData = {
+                animalName: animalName,
+                categoryName: categoryName,
+                image: imageData.url,
+            };
+
+
+            const res = await post("/animal", formData);
+            const successMessage = res.data.message || "New animal created"
+            toast({ title: successMessage });
+            animalDataReretch();
             setModalOpen(false)
 
         } catch (error: any) {
             console.log(error, "error")
-            // const errorMessage = error.response.data.message || "An error occurred while updating category"
-            // toast({ title: errorMessage });
+            const errorMessage = error.response.data.message || "An error occurred while updating animal"
+            toast({ title: errorMessage });
         } finally {
             setLoading(false)
         }
@@ -91,6 +109,11 @@ export const UploadAnimalForm = ({ setModalOpen }: Props) => {
                             formLabel="Images"
                             required={true}
                         />
+                        {/* {
+                            imageError !== "" && (
+                                <p>{imageError}</p>
+                            )
+                        } */}
                     </div>
                     <Button
                         type="submit"

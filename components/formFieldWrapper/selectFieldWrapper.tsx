@@ -6,6 +6,7 @@ import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 // import { get } from "@/utils/fetchApi";
 import Spinner from "../spinner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { useCategoryContext } from "@/context/categoryProvider";
 
 interface Category {
     _id: string;
@@ -51,29 +52,8 @@ export const SelectFieldWrapper = ({ control, name, formLabel, disabled, require
     //         </div>
     //     );
     // }
-    const categoryData = [
-        {
-            _id: "1",
-            isEnabled: true,
-            value: "bird",
-            name: "bird"
+    const { categoryData } = useCategoryContext()
 
-        },
-        {
-            _id: "2",
-            isEnabled: true,
-            value: "animal",
-            name: "Animal"
-
-        },
-        {
-            _id: "3",
-            isEnabled: true,
-            value: "fish",
-            name: "Fish"
-
-        },
-    ] as Category[];
     return (
         <FormField
             control={control}
@@ -88,7 +68,7 @@ export const SelectFieldWrapper = ({ control, name, formLabel, disabled, require
                                 </SelectTrigger>
                                 <SelectContent>
                                     {categoryData
-                                        .filter(item => item.isEnabled)
+                                        // .filter(item => item.isEnabled)
                                         .map(item => (
                                             <SelectItem key={item._id} value={item.value}>
                                                 {item.name}

@@ -1,3 +1,4 @@
+
 import React from "react";
 
 type Props = {
@@ -7,7 +8,10 @@ type Props = {
 const ClientLayout = ({ children }: Props) => {
 	return (
 		<div className="min-h-screen bg-primary">
-			<>{children}</>
+			<>
+				{children}
+
+			</>
 		</div>
 	);
 };

@@ -5,7 +5,7 @@ type Props = {}
 const Spinner = (props: Props) => {
     return (
         <ClipLoader
-            color="#1d1f1e"
+            color="#ffffff"
             size={30}
             aria-label="Loading Spinner"
             data-testid="loader"

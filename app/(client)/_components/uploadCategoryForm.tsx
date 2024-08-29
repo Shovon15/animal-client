@@ -9,11 +9,13 @@ import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 // import { QueryObserverResult } from "@tanstack/react-query";
 
-
 import { useRouter } from "next/navigation";
 import { InputFieldWrapper } from "@/components/formFieldWrapper/inputFieldWrapper";
 import Spinner from "@/components/spinner";
 import { CategorySchema } from "@/schemas";
+import { useToast } from "@/components/ui/use-toast";
+import { post } from "@/utils/fetchApi";
+import { useCategoryContext } from "@/context/categoryProvider";
 
 
 
@@ -27,8 +29,9 @@ export const UploadCategoryForm = ({ setModalOpen }: Props) => {
 
     const [loading, setLoading] = useState<boolean>(false)
 
-    // const { toast } = useToast();
-    const router = useRouter();
+    const { toast } = useToast();
+
+    const { refetchCategoryData } = useCategoryContext();
 
     const form = useForm<z.infer<typeof CategorySchema>>({
         resolver: zodResolver(CategorySchema),
@@ -46,17 +49,17 @@ export const UploadCategoryForm = ({ setModalOpen }: Props) => {
 
         try {
             setLoading(true)
-            // const res = await post("/category", formData);
-            // const successMessage = res.data.message || "category create succssfully"
-            // toast({ title: successMessage });
-            // router.push("/dashboard/category");
+            const res = await post("/category", formData);
+            const successMessage = res.data.message || "category create succssfully"
+            toast({ title: successMessage });
+            refetchCategoryData()
             console.log(formData, "formData")
             setModalOpen(false)
 
         } catch (error: any) {
             console.log(error, "error")
-            // const errorMessage = error.response.data.message || "An error occurred while updating category"
-            // toast({ title: errorMessage });
+            const errorMessage = error.response.data.message || "An error occurred while updating category"
+            toast({ title: errorMessage });
         } finally {
             setLoading(false)
         }
