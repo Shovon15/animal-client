@@ -5,11 +5,7 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
-
 import { Button } from "@/components/ui/button";
-// import { QueryObserverResult } from "@tanstack/react-query";
-
-import { useRouter } from "next/navigation";
 import { InputFieldWrapper } from "@/components/formFieldWrapper/inputFieldWrapper";
 import Spinner from "@/components/spinner";
 import { CategorySchema } from "@/schemas";
@@ -21,14 +17,12 @@ import { useCategoryContext } from "@/context/categoryProvider";
 
 type Props = {
     setModalOpen: (modalOpen: boolean) => void;
-    // refetch: () => Promise<QueryObserverResult<any, unknown>>;
 }
 
 
 export const UploadCategoryForm = ({ setModalOpen }: Props) => {
 
     const [loading, setLoading] = useState<boolean>(false)
-
     const { toast } = useToast();
 
     const { refetchCategoryData } = useCategoryContext();
@@ -41,7 +35,6 @@ export const UploadCategoryForm = ({ setModalOpen }: Props) => {
     });
 
     const onSubmit = async (values: z.infer<typeof CategorySchema>) => {
-
 
         const formData = {
             name: values.categoryName,

@@ -10,7 +10,6 @@ const ClientLayout = ({ children }: Props) => {
 		<div className="min-h-screen bg-primary">
 			<>
 				{children}
-
 			</>
 		</div>
 	);

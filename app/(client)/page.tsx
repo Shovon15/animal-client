@@ -1,17 +1,13 @@
 'use client'
 import { InputModal } from "@/components/customModal/inputModal";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { UploadCategoryForm } from "./_components/uploadCategoryForm";
 import { UploadAnimalForm } from "./_components/uploadAnimalForm";
 import { useCategoryContext } from "@/context/categoryProvider";
-import { useQuery } from "@tanstack/react-query";
-import { get } from "@/utils/fetchApi";
 import Spinner from "@/components/spinner";
 import Image from "next/image";
 import { useAnimalContext } from "@/context/animalProvider";
-
-
 
 
 const ClientPage = () => {
@@ -79,11 +75,18 @@ const ClientPage = () => {
               <div className="flex flex-wrap justify-center gap-4 p-5 md:p-10">
                 {animalData.map((animal, i) => (
                   <div key={i} className="p-2 border border-gray-600 rounded-lg">
-                    <div className="w-32 h-32">
-                      <Image src={animal.image} width={150} height={150} alt="image" className="rounded-md" />
+                    <div className="w-36 h-36 overflow-hidden flex justify-center items-center">
+                      <Image
+                        src={animal.image}
+                        width={150}
+                        height={150}
+                        alt="image"
+                        className="object-cover w-full h-full rounded-md"
+                      />
                     </div>
                     <p className="text-white text-center">{animal.animalName}</p>
                   </div>
+
                 ))}
               </div>
             ) : (
